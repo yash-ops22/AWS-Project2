@@ -17,4 +17,51 @@ and use the Cloudfront URL to  update in code in /var/www/html
 
 # Solution
 
+# Step 1:
+First as mentioned we have to create a Security Group which
+will allow port 80, also we have included port 22 to login into 
+our instance.
 
+    resource "aws_security_group" "sgcloud2" {
+
+                name        = "sgcloud2"
+           
+
+                ingress {
+
+                  from_port   = 80
+                  to_port     = 80
+                  protocol    = "tcp"
+                  cidr_blocks = [ "0.0.0.0/0"]
+
+                }
+
+              
+                ingress {
+
+                  from_port   = 22
+                  to_port     = 22
+                  protocol    = "tcp"
+                  cidr_blocks = [ "0.0.0.0/0"]
+
+                }
+
+
+
+
+                egress {
+
+                  from_port   = 0
+                  to_port     = 0
+                  protocol    = "-1"
+                  cidr_blocks = ["0.0.0.0/0"]
+                }
+
+
+                tags = {
+
+                  Name = "sgcloud2"
+                }
+              }
+
+# Step 2:
