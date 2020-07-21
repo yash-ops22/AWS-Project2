@@ -140,6 +140,9 @@ Creating the EFS Volume......
 
 
 
+
+
+
 We cannot use this storage directly, so Mounting this EFS to our 
 instance that we have launched, mounting this EFS into directory
 /var/www/html of the httpd server.
@@ -168,6 +171,7 @@ and downloading the files into it.......
 
 # Step 4:
 
+
 Creating the S3 bucket, so that we can upload files or
 images into it.......
 
@@ -190,6 +194,9 @@ images into it.......
   
   
   
+
+
+
 Uploading the images into our S3 bucket and making it
 publically accesible....
      
@@ -201,7 +208,10 @@ publically accesible....
         } 
 
 
+
 # Step 5:
+
+
 
 Creating the Cloudfront from the S3 bucket...
   
@@ -217,8 +227,8 @@ Creating the Cloudfront from the S3 bucket...
             https_port = 443
             origin_protocol_policy = "match-viewer"
             origin_ssl_protocols = ["TLSv1", "TLSv1.1", "TLSv1.2"]
-         }
-      }
+           }
+        }
   
 
     enabled             = true
@@ -234,29 +244,33 @@ Creating the Cloudfront from the S3 bucket...
       query_string = false
 
       cookies {
-        forward = "none"
+          forward = "none"
+        }
       }
-    }
 
     viewer_protocol_policy = "allow-all"
     min_ttl                = 0
     default_ttl            = 3600
     max_ttl                = 86400
-  }
+    }
 
     restrictions {
        geo_restriction {
           restriction_type = "none"
-       }
-  }
+        }
+    }
 
      viewer_certificate {
          cloudfront_default_certificate = true
-      }
-    } 
+        }
+      } 
+    
+    
     
     
 <img src="cdn.png">
+
+
 
     
 We have to install the required  plugins for our terraform
@@ -268,13 +282,14 @@ using the command....
 After Completing the code we can check or validate our code
 using command....
 
-      terrform  validate
+     terrform  validate
       
       
  Now we can launch the infrastructure using the terraform 
  command.....
     
-          terraform apply --auto-approve
+     terraform apply --auto-approve
+
 
 
 <img src="apply.png">
@@ -289,15 +304,18 @@ with the cloudfront domain name.
 
 
 After saving these changes we can restart our httpd or apache server.
-
 Using our instance's public IP we can see our web portal!!!!
-
-
 This is what it looks like...........
 
 
 
 <img src="output.png">
+
+
+
+
+
+
 
 
 
