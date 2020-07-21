@@ -64,4 +64,91 @@ our instance.
                 }
               }
 
+
 # Step 2:
+Launching our instance using the above created security
+group and using the key we had created earlier. Also, installing 
+the httpd server into it so that we can launch our site....
+
+
+      resource "aws_instance" "aws-os" {
+                        ami             =  "ami-0732b62d310b80e97"
+                        instance_type   =  "t2.micro"
+                        key_name        =  "cloudkey2"
+                        subnet_id       =  "subnet-d26d68ba"
+                        security_groups = ["${aws_security_group.sgcloud2.id}"]
+
+
+                       connection {
+                          type     = "ssh"
+                          user     = "ec2-user"
+                          private_key = file("C:/Users/win 10/Downloads/cloudkey2.pem")
+                          host     = aws_instance.aws-os.public_ip
+                        }
+
+                        provisioner "remote-exec" {
+                          inline = [
+                            "sudo yum install amazon-efs-utils -y",
+                            "sudo yum install httpd  php git -y",
+                            "sudo systemctl restart httpd",
+                            "sudo systemctl enable httpd",
+                            "sudo setenforce 0",
+                            "sudo yum -y install nfs-utils"
+                          ]
+                        }
+
+                        tags = {
+                          Name = "osaws"
+                        }
+                      }
+
+     
+
+# Step 3:
+We have to create an volume or storage,  In our first
+aws task we had used EBS, here we are using EFS.
+Creating the EFS Volume......
+
+     resource "aws_efs_file_system" "amazonefs" {
+       creation_token = "my-cloudefs"
+
+       tags = {
+         Name = "amazonefs"
+       }
+     }
+
+     resource "aws_efs_mount_target" "efsmount" {
+        file_system_id = aws_efs_file_system.amazonefs.id
+        security_groups = [aws_security_group.sgcloud2.id]
+        subnet_id      =   "subnet-d26d68ba"
+
+     }
+
+We cannot use this storage directly, so Mounting this EFS to our 
+instance that we have launched, mounting this EFS into directory
+/var/www/html of the httpd server.
+
+     
+    resource "null_resource" "mount"  {
+                depends_on = [aws_efs_mount_target.efsmount]
+                connection {
+                type     = "ssh"
+                user     = "ec2-user"
+                private_key = file("C:/Users/win 10/Downloads/cloudkey2.pem")
+                host     = aws_instance.aws-os.public_ip
+              }
+              provisioner "remote-exec" {
+                  inline = [
+                    "sudo mount -t nfs -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport ${aws_efs_file_system.amazonefs.id}.efs.ap-south-         1.amazonaws.com:/ /var/www/html",
+                       "sudo rm -rf /var/www/html/*",
+                       "sudo git clone https://github.com/yash-ops22/awscloud2.git /var/www/html/",
+                       "sudo sed -i 's/url/${aws_cloudfront_distribution.amazoncloudfront.domain_name}/g' /var/www/html/index.html"
+                        ]
+                    }
+                  }
+
+
+# Step 4:
+
+
+
