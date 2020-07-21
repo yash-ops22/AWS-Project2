@@ -127,6 +127,8 @@ Creating the EFS Volume......
 We cannot use this storage directly, so Mounting this EFS to our 
 instance that we have launched, mounting this EFS into directory
 /var/www/html of the httpd server.
+Also, cloning the gihthub repo into the /var/www/html folder
+and downloading the files into it.......
 
      
     resource "null_resource" "mount"  {
@@ -149,6 +151,31 @@ instance that we have launched, mounting this EFS into directory
 
 
 # Step 4:
+Creating the S3 bucket, so that we can upload files or
+images into it.......
 
+     resource "aws_s3_bucket" "buckets3yashucloud22" {
+        bucket = "yashu22"
+        acl    = "private"
+
+        tags = {
+          Name        = "buckets3"
+        }
+      }
+       locals {
+          s3_origin_id = "myS3Origin"
+        }
+        
+Uploading the images into our S3 bucket and making it
+publically accesible....
+     
+     resource "aws_s3_bucket_object" "objectawsbucket" {
+          bucket = "${aws_s3_bucket.buckets3yashucloud22.id}"
+        key    = "picture"
+          source = "C:/Users/win 10/Downloads/aws1.jpg"
+          acl    = "public-read"
+        } 
+
+# Step 5:
 
 
