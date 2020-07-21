@@ -18,6 +18,7 @@ and use the Cloudfront URL to  update in code in /var/www/html
 # Solution
 
 # Step 1:
+
 First as mentioned we have to create a Security Group which
 will allow port 80, also we have included port 22 to login into 
 our instance.
@@ -65,7 +66,14 @@ our instance.
               }
 
 
+
+<img src="sgroup.png">
+
+
+
+
 # Step 2:
+
 Launching our instance using the above created security
 group and using the key we had created earlier. Also, installing 
 the httpd server into it so that we can launch our site....
@@ -105,6 +113,7 @@ the httpd server into it so that we can launch our site....
      
 
 # Step 3:
+
 We have to create an volume or storage,  In our first
 aws task we had used EBS, here we are using EFS.
 Creating the EFS Volume......
@@ -123,6 +132,13 @@ Creating the EFS Volume......
         subnet_id      =   "subnet-d26d68ba"
 
      }
+
+
+
+<img src="efs.png">
+
+
+
 
 We cannot use this storage directly, so Mounting this EFS to our 
 instance that we have launched, mounting this EFS into directory
@@ -151,6 +167,7 @@ and downloading the files into it.......
 
 
 # Step 4:
+
 Creating the S3 bucket, so that we can upload files or
 images into it.......
 
@@ -165,7 +182,14 @@ images into it.......
        locals {
           s3_origin_id = "myS3Origin"
         }
-        
+  
+  
+  
+   <img src="buckets3.png">     
+  
+  
+  
+  
 Uploading the images into our S3 bucket and making it
 publically accesible....
      
@@ -178,7 +202,8 @@ publically accesible....
 
 
 # Step 5:
-Creating the Cloudfront from the S3 bucket
+
+Creating the Cloudfront from the S3 bucket...
   
   
     resource "aws_cloudfront_distribution"  "amazoncloudfront" {
@@ -229,5 +254,55 @@ Creating the Cloudfront from the S3 bucket
          cloudfront_default_certificate = true
       }
     } 
+    
+    
+<img src="cdn.png">
 
-Now we can update the code with the cloudfront domain name.
+    
+We have to install the required  plugins for our terraform
+using the command....
+
+     terraform init
+     
+     
+After Completing the code we can check or validate our code
+using command....
+
+      terrform  validate
+      
+      
+ Now we can launch the infrastructure using the terraform 
+ command.....
+    
+          terraform apply --auto-approve
+
+
+<img src="apply.png">
+
+
+
+Now when our infrastructure is launched we can update the code
+with the cloudfront domain name.
+
+
+<img src="up-cdn-link.png">
+
+
+After saving these changes we can restart our httpd or apache server.
+
+Using our instance's public IP we can see our web portal!!!!
+
+
+This is what it looks like...........
+
+
+
+<img src="output.png">
+
+
+
+
+
+
+
+Thank You For Your Precious Time....................
