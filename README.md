@@ -17,6 +17,25 @@ and use the Cloudfront URL to  update in code in /var/www/html
 
 # Solution
 
+ Before creating any Resources, we have to configure our AWS Profile:
+ Here we have already configure it
+
+           
+           AWS Access Key ID [****************LELI]:
+           AWS Secret Access Key [****************Av0P]:
+           Default region name [ap-south-1]:
+           Default output format [json]:
+
+
+Then in our terraform code specifying the provider for creating
+ the resources into the specifide provider...
+
+         provider "aws" {
+            region     = "ap-south-1"
+            profile    = "Yashu"
+             }
+
+
 # Step 1:
 
 First as mentioned we have to create a Security Group which
